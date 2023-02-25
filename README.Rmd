@@ -1,0 +1,48 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# tuhocr <img src="man/figures/logo.png" align="right" alt="" width="120" />
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/tuhocr/tuhocr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tuhocr/tuhocr/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+Package này tập hợp các function giúp giải quyết công việc xử lý dữ liệu thường ngày. Để biết cách viết function, thân mời bạn tham gia khóa học R ở www.tuhocr.com giúp trang bị kiến thức R vững chắc.
+
+## Hướng dẫn cài đặt
+
+Cài đặt package `tuhocr` theo cách sau:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("tuhocr/tuhocr")
+```
+
+Trước mắt trong package này có function `clean_spss()` giúp import file SPSS (.sav) vào trong R. Sau đó các cột có label sẽ được chuyển thành factor, cũng như làm sạch các thông tin liên quan đến SPSS để ta có data frame sạch.
+
+```r
+# Các bạn download các file SPSS (.sav) example này về.
+# http://spss.allenandunwin.com.s3-website-ap-southeast-2.amazonaws.com/data-files.html
+# Thực hiện dòng lệnh. Ta thu được data frame sạch để phân tích dữ liệu.
+```
+```{r}
+library(tuhocr)
+data <- clean_spss("https://tuhocr.netlify.app/experim.sav")
+head(data[, 1:6])
+str(data)
+```
+
+
+
