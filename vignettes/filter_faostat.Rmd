@@ -1,0 +1,22 @@
+---
+title: "Hướng dẫn trích xuất dữ liệu nông sản từ FAOSTAT"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hướng dẫn trích xuất dữ liệu nông sản từ FAOSTAT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{rmarkdown}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tuhocr)
+
+
+```
