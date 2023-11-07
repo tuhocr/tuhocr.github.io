@@ -1,33 +1,10 @@
----
-title: "Hướng dẫn trích xuất dữ liệu nông sản từ FAOSTAT"
-author: "Duc Nguyen"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Hướng dẫn trích xuất dữ liệu nông sản từ FAOSTAT}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteDepends{rmarkdown}
----
-
-```{r, include = FALSE}
+## ---- include = FALSE---------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
 
-## Quy trình trích xuất dữ liệu từ FAOSTAT
-
-Thông thường để trích xuất dữ liệu nông sản từ FAOSTAT, bạn sẽ lên trực tiếp trang web `https://www.fao.org/faostat/en/` và tải về dataset liên quan cũng như sử dụng các công cụ lọc dữ liệu và vẽ đồ thị được cung cấp sẵn trên website.
-
-Để thực hiện việc này nhanh gọn trong R thì bạn cần các bước sau:
-
-**1/ Bạn sử dụng package `FAOSTAT` để download tự động dataset R về máy tính.** 
-
-* download dataset mã `QCL` dành cho nông sản
-
-```{r}
+## -----------------------------------------------------------------------------
 # install.packages("FAOSTAT")
 # library(FAOSTAT)
 
@@ -44,21 +21,11 @@ Thông thường để trích xuất dữ liệu nông sản từ FAOSTAT, bạn
 # saveRDS(crop_production, "crop_production.rds")
 
 # crop_production <- readRDS("crop_production.rds")
-```
 
-* download file csv chứa danh sách quốc gia và vùng lãnh thổ
-
-```{r}
+## -----------------------------------------------------------------------------
 # chọn Country/Region ở link này https://www.fao.org/faostat/en/#definitions
-```
 
-**2/ Import 2 file ở trên vào R và sử dụng function để trích xuất dữ liệu.**
-
-Khi bạn download package `tuhocr` về máy tính thì mình đã để sẵn 2 file `crop_production_all_data.rds` và `FAOSTAT_data_3-21-2023.csv` ở thời điểm tháng 3/2023 rồi, vì vậy bạn có thể dùng các file này để trích xuất dữ liệu.
-
-Trong ví dụ minh họa này mình dùng function `filter_faostat()` để trích xuất ra 10 quốc gia sản xuất cà phê nhiều nhất trên thế giới năm 2021. Tham số `rank_filter` và `year_filter` được thiết kế để lọc dữ liệu theo thứ hạng và theo các mốc thời gian khác nhau tùy vào nhu cầu phân tích dữ liệu.
-
-```{r setup}
+## ----setup--------------------------------------------------------------------
 # df_1 <- readRDS("crop_production.rds")
 # df_2 <- read.csv("FAOSTAT_data_2023.csv")
 
@@ -88,25 +55,15 @@ year_filter = c(2021))
 
 coffee_data
 str(coffee_data)
-```
 
-**3/ Nếu bạn muốn trích xuất toàn bộ các quốc gia sản xuất nông sản thì ta dùng cách sau`**
-
-Trong ví dụ minh họa này mình dùng function `extract_faostat()` để trích xuất toàn bộ các quốc gia sản xuất đậu nành trên thế giới theo tất cả các năm trong bộ dataset này. Trên cơ sở dataset thu được bạn sẽ lọc tiếp ra các thông tin liên quan đến nhu cầu xử lý dữ liệu và vẽ đồ thị.
-
-```{r}
+## -----------------------------------------------------------------------------
 soya_data <- extract_faostat(input_rds = df_1,
                              input_region = df_2,
                              input_item = "Soya beans")
 
 head(soya_data, n = 15)
-```
 
-## Danh sách cây trồng
-
-Dataset của FAOSTAT bao gồm các loại nông sản nhóm trồng trọt và chăn nuôi. Các function `extract_faostat()` và `filter_faostat()` được thiết kế để lọc dữ liệu trong nhóm trồng trọt (là các nông sản được ghi nhận sản lượng và diện tích canh tác). Đây là danh sách nhóm nông sản cây trồng giúp bạn tham khảo khi cần trích xuất loại cây trồng cụ thể.
-
-```{r}
+## -----------------------------------------------------------------------------
 crop_full <- df_1
 ok <- as.data.frame(table(crop_full$item, crop_full$element))
 ok_1 <- ok |> subset(Freq != 0)
@@ -118,11 +75,8 @@ ok_2 <- reshape(data = ok_1,
 ok_2[!is.na(ok_2$Freq.area_harvested) & !is.na(ok_2$Freq.production), ] -> ok_3
 as.character(ok_3$Var1) -> crop_item
 crop_item
-```
 
-## Ứng dụng để vẽ đồ thị nhanh chóng
-
-```{r, fig.width=9, fig.height=4}
+## ---- fig.width=9, fig.height=4-----------------------------------------------
 coffee_data <- filter_faostat(data_rds = df_1,
                               data_region = df_2,
                               item_filter = "Coffee, green",
@@ -169,17 +123,4 @@ b <- barplot(production ~ area,
 text(b, label + 0.2, label, font = 2, col = "black")
 
 title(main = "Top 10 quốc gia sản xuất cà phê trên thế giới năm 2021 ")
-```
-
-
-
-
-
-
-
-
-
-
-
-
 
